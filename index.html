@@ -1,16 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Car Wash Pricing Demo</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Car Wash Demo</title>
 </head>
 <body>
-  <h1>Car Wash Pricing Configuration</h1>
+<h1>Car Wash Price Calculator</h1>
 
-  <button id="loadPricing">Load Pricing</button>
+<label for="year">Year:</label>
+<select id="year"></select>
 
-  <pre id="output">Click the button to load pricing...</pre>
+<label for="make">Make:</label>
+<select id="make" disabled></select>
 
-  <script src="script.js"></script>
+<label for="model">Model:</label>
+<select id="model" disabled></select>
+
+<button id="calculateBtn" disabled>Get Price</button>
+
+<h2 id="priceResult"></h2>
+
+<script src="script.js"></script>
 </body>
 </html>
