@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://https://car-wash-api-513104733626.us-east1.run.app";
+const API_BASE_URL = "https://car-wash-api-513104733626.us-east1.run.app";
 
 document
   .getElementById("loadPricing")
