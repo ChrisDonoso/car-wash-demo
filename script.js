@@ -1,6 +1,5 @@
-const apiBase = "https://your-cloud-run-url"; // replace with your actual API base
+const apiBase = "https://car-wash-api-513104733626.us-east1.run.app";
 
-// DOM elements
 const yearSelect = document.getElementById("year");
 const makeSelect = document.getElementById("make");
 const modelSelect = document.getElementById("model");
