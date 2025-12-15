@@ -92,6 +92,12 @@ calculateBtn.addEventListener("click", async () => {
     const model = modelSelect.value;
 
     priceResult.innerText = "Calculating...";
+    priceBreakdown.innerHTML = "";
+
+    if (!year || !make || !model) {
+        priceResult.innerText = "Please select year, make, and model.";
+        return;
+    }
 
     try {
         const res = await fetch(`${apiBase}/pricing/calculate`, {
@@ -108,14 +114,31 @@ calculateBtn.addEventListener("click", async () => {
             return;
         }
 
-        priceResult.innerText = `Price: $${data.total_price.toFixed(2)}`;
+        // Show total price
+        priceResult.innerText = `Total Price: $${data.total_price.toFixed(2)}`;
+
+        // Build breakdown
+        let breakdownHTML = `<ul>`;
+        breakdownHTML += `<li>Base Price: $${data.base_price.toFixed(2)}</li>`;
+
+        if (data.features && data.features.length > 0) {
+            data.features.forEach(f => {
+                if (f.detected) {
+                    breakdownHTML += `<li>${f.name}: $${f.fee.toFixed(2)}</li>`;
+                }
+            });
+        }
+
+        breakdownHTML += `<li><strong>Total: $${data.total_price.toFixed(2)}</strong></li>`;
+        breakdownHTML += `</ul>`;
+
+        priceBreakdown.innerHTML = breakdownHTML;
 
     } catch (err) {
         priceResult.innerText = "Error calculating price";
         console.error(err);
     }
 });
-
 
 // Initialize years dropdown
 loadYears();
