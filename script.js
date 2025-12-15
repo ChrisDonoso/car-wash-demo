@@ -7,6 +7,10 @@ const calculateBtn = document.getElementById("calculateBtn");
 const priceResult = document.getElementById("priceResult");
 const priceBreakdown = document.getElementById("priceBreakdown");
 
+makeSelect.disabled = true;
+modelSelect.disabled = true;
+calculateBtn.disabled = true;
+
 // Helper: capitalize first letter of each word
 function titleCase(str) {
     return str
