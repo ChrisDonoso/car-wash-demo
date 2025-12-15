@@ -1,40 +1,37 @@
-const apiBase = "https://car-wash-api-513104733626.us-east1.run.app";
+const apiBase = "https://your-cloud-run-url"; // replace with your actual API base
 
+// DOM elements
 const yearSelect = document.getElementById("year");
 const makeSelect = document.getElementById("make");
 const modelSelect = document.getElementById("model");
 const calculateBtn = document.getElementById("calculateBtn");
 const priceResult = document.getElementById("priceResult");
+const priceBreakdown = document.getElementById("priceBreakdown");
 
-// Initialize dropdowns
-makeSelect.disabled = true;
-modelSelect.disabled = true;
-calculateBtn.disabled = true;
+// Helper: capitalize first letter of each word
+function titleCase(str) {
+    return str
+        .split(" ")
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+}
 
-// Load years dynamically
-async function loadYears() {
+// Populate years dynamically
+async function populateYears() {
     try {
         const res = await fetch(`${apiBase}/vehicles/years`);
-        if (!res.ok) throw new Error(`API error: ${res.status}`);
         const data = await res.json();
-
-        if (!data.years || data.years.length === 0) return;
-
-        // Add placeholder first
-        yearSelect.innerHTML = `<option value="" disabled selected>Select a year</option>`;
-        data.years.forEach(y => yearSelect.add(new Option(y, y)));
-
+        data.years.forEach(year => yearSelect.add(new Option(year, year)));
     } catch (err) {
-        console.error("Failed to load years:", err);
+        console.error("Error fetching years:", err);
     }
 }
 
-// Populate makes for selected year
-yearSelect.addEventListener("change", async () => {
-    const year = yearSelect.value;
-    makeSelect.innerHTML = `<option value="" disabled selected>Select a make</option>`;
-    modelSelect.innerHTML = `<option value="" disabled selected>Select a model</option>`;
-    makeSelect.disabled = true;
+// Populate makes when year changes
+yearSelect.addEventListener("change", async (e) => {
+    const year = e.target.value;
+    makeSelect.innerHTML = "";
+    modelSelect.innerHTML = "";
     modelSelect.disabled = true;
     calculateBtn.disabled = true;
 
@@ -42,50 +39,41 @@ yearSelect.addEventListener("change", async () => {
 
     try {
         const res = await fetch(`${apiBase}/vehicles/makes/${year}`);
-        if (!res.ok) return;
-
         const data = await res.json();
-        if (!data.makes || data.makes.length === 0) return;
-
-        data.makes.forEach(m => makeSelect.add(new Option(m, m)));
+        data.makes.forEach(m => makeSelect.add(new Option(titleCase(m), m)));
         makeSelect.disabled = false;
-
     } catch (err) {
+        makeSelect.disabled = true;
         console.error(err);
     }
 });
 
-// Populate models for selected make
-makeSelect.addEventListener("change", async () => {
-    const year = yearSelect.value;
-    const make = makeSelect.value;
-    modelSelect.innerHTML = `<option value="" disabled selected>Select a model</option>`;
-    modelSelect.disabled = true;
+// Populate models when make changes
+makeSelect.addEventListener("change", async (e) => {
+    const year = parseInt(yearSelect.value);
+    const make = e.target.value;
+    modelSelect.innerHTML = "";
     calculateBtn.disabled = true;
 
-    if (!year || !make) return;
+    if (!make) return;
 
     try {
         const res = await fetch(`${apiBase}/vehicles/models/${year}/${make}`);
-        if (!res.ok) return;
-
         const data = await res.json();
-        if (!data.models || data.models.length === 0) return;
-
-        data.models.forEach(m => modelSelect.add(new Option(m, m)));
+        data.models.forEach(m => modelSelect.add(new Option(titleCase(m), m)));
         modelSelect.disabled = false;
-
     } catch (err) {
+        modelSelect.disabled = true;
         console.error(err);
     }
 });
 
-// Enable calculate button only when a model is selected
+// Enable calculate button when model selected
 modelSelect.addEventListener("change", () => {
     calculateBtn.disabled = !modelSelect.value;
 });
 
-// Calculate price
+// Calculate price and show breakdown
 calculateBtn.addEventListener("click", async () => {
     const year = parseInt(yearSelect.value);
     const make = makeSelect.value;
@@ -113,16 +101,13 @@ calculateBtn.addEventListener("click", async () => {
             return;
         }
 
-        // Show total price at top
+        // Show total price
         priceResult.innerText = `Total Price: $${data.total_price.toFixed(2)}`;
 
         // Build breakdown
         let breakdownHTML = `<ul>`;
-
-        // Base price
         breakdownHTML += `<li>Base Price (${data.size_category}): $${data.base_price.toFixed(2)}</li>`;
 
-        // Add detected features
         if (data.features && data.features.length > 0) {
             data.features.forEach(f => {
                 if (f.detected) {
@@ -131,7 +116,6 @@ calculateBtn.addEventListener("click", async () => {
             });
         }
 
-        // Total
         breakdownHTML += `<li><strong>Total: $${data.total_price.toFixed(2)}</strong></li>`;
         breakdownHTML += `</ul>`;
 
@@ -143,5 +127,5 @@ calculateBtn.addEventListener("click", async () => {
     }
 });
 
-// Initialize years dropdown
-loadYears();
+// Initialize
+populateYears();
