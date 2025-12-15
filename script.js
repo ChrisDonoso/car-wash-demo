@@ -91,10 +91,7 @@ calculateBtn.addEventListener("click", async () => {
     const make = makeSelect.value;
     const model = modelSelect.value;
 
-    if (!year || !make || !model) {
-        priceResult.innerText = "Please select year, make, and model.";
-        return;
-    }
+    priceResult.innerText = "Calculating...";
 
     try {
         const res = await fetch(`${apiBase}/pricing/calculate`, {
@@ -103,19 +100,22 @@ calculateBtn.addEventListener("click", async () => {
             body: JSON.stringify({ year, make, model })
         });
 
-        if (!res.ok) {
-            priceResult.innerText = "Error calculating price";
+        const data = await res.json();
+        console.log("Calculate response:", data);
+
+        if (!res.ok || data.total_price === undefined) {
+            priceResult.innerText = data.detail || "Price not available";
             return;
         }
 
-        const data = await res.json();
-        priceResult.innerText = `Price: $${data.price.toFixed(2)}`;
+        priceResult.innerText = `Price: $${data.total_price.toFixed(2)}`;
 
     } catch (err) {
         priceResult.innerText = "Error calculating price";
         console.error(err);
     }
 });
+
 
 // Initialize years dropdown
 loadYears();
