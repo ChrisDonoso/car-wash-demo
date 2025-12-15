@@ -5,19 +5,11 @@ const makeSelect = document.getElementById("make");
 const modelSelect = document.getElementById("model");
 const calculateBtn = document.getElementById("calculateBtn");
 const priceResult = document.getElementById("priceResult");
-const priceBreakdown = document.getElementById("priceBreakdown");
 
 // Initialize dropdowns
 makeSelect.disabled = true;
 modelSelect.disabled = true;
 calculateBtn.disabled = true;
-
-function titleCase(str) {
-    return str
-        .split(" ")
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(" ");
-}
 
 // Load years dynamically
 async function loadYears() {
@@ -55,11 +47,10 @@ yearSelect.addEventListener("change", async () => {
         const data = await res.json();
         if (!data.makes || data.makes.length === 0) return;
 
-       data.makes.forEach(m => makeSelect.add(new Option(titleCase(m), m)));
+        data.makes.forEach(m => makeSelect.add(new Option(m, m)));
         makeSelect.disabled = false;
 
     } catch (err) {
-
         console.error(err);
     }
 });
@@ -85,7 +76,6 @@ makeSelect.addEventListener("change", async () => {
         modelSelect.disabled = false;
 
     } catch (err) {
-
         console.error(err);
     }
 });
