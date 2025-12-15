@@ -107,20 +107,22 @@ calculateBtn.addEventListener("click", async () => {
         });
 
         const data = await res.json();
-        console.log("Calculate response:", data);
 
         if (!res.ok || data.total_price === undefined) {
             priceResult.innerText = data.detail || "Price not available";
             return;
         }
 
-        // Show total price
+        // Show total price at top
         priceResult.innerText = `Total Price: $${data.total_price.toFixed(2)}`;
 
         // Build breakdown
         let breakdownHTML = `<ul>`;
-        breakdownHTML += `<li>Base Price: $${data.base_price.toFixed(2)}</li>`;
 
+        // Base price
+        breakdownHTML += `<li>Base Price (${data.size_category}): $${data.base_price.toFixed(2)}</li>`;
+
+        // Add detected features
         if (data.features && data.features.length > 0) {
             data.features.forEach(f => {
                 if (f.detected) {
@@ -129,6 +131,7 @@ calculateBtn.addEventListener("click", async () => {
             });
         }
 
+        // Total
         breakdownHTML += `<li><strong>Total: $${data.total_price.toFixed(2)}</strong></li>`;
         breakdownHTML += `</ul>`;
 
