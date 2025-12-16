@@ -92,6 +92,12 @@ calculateBtn.addEventListener("click", async () => {
     const make = makeSelect.value;
     const model = modelSelect.value;
 
+    // Collect selected conditions
+    const conditions = [];
+    if (document.getElementById("bugFee").checked) conditions.push("bug_buildup");
+    if (document.getElementById("mudFee").checked) conditions.push("mud");
+    if (document.getElementById("petHairFee").checked) conditions.push("pet_hair");
+
     priceResult.innerText = "Calculating...";
     priceBreakdown.innerHTML = "";
 
@@ -104,7 +110,7 @@ calculateBtn.addEventListener("click", async () => {
         const res = await fetch(`${apiBase}/pricing/calculate`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ year, make, model })
+            body: JSON.stringify({ year, make, model, conditions })
         });
 
         const data = await res.json();
@@ -119,11 +125,8 @@ calculateBtn.addEventListener("click", async () => {
 
         // Build breakdown
         let breakdownHTML = `<ul>`;
-
-        // Base price
         breakdownHTML += `<li>Base Price (${data.size_category}): $${data.base_price.toFixed(2)}</li>`;
 
-        // Add detected features
         if (data.features && data.features.length > 0) {
             data.features.forEach(f => {
                 if (f.detected) {
@@ -132,7 +135,6 @@ calculateBtn.addEventListener("click", async () => {
             });
         }
 
-        // Total
         breakdownHTML += `<li><strong>Total: $${data.total_price.toFixed(2)}</strong></li>`;
         breakdownHTML += `</ul>`;
 
