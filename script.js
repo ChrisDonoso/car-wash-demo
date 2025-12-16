@@ -5,6 +5,7 @@ const makeSelect = document.getElementById("make");
 const modelSelect = document.getElementById("model");
 const calculateBtn = document.getElementById("calculateBtn");
 const priceResult = document.getElementById("priceResult");
+const pricingContainer = document.getElementById("pricingInfo");
 
 // Initialize dropdowns
 makeSelect.disabled = true;
@@ -143,5 +144,43 @@ calculateBtn.addEventListener("click", async () => {
     }
 });
 
+async function loadPricingInfo() {
+    try {
+        const res = await fetch(`${apiBase}/`);
+        if (!res.ok) throw new Error(`API error: ${res.status}`);
+        const data = await res.json();
+
+        let html = "<ul>";
+
+        // Base pricing
+        html += "<li><strong>Base Prices:</strong></li>";
+        for (const [size, price] of Object.entries(data.base_pricing)) {
+            html += `<li>${size.charAt(0).toUpperCase() + size.slice(1)}: $${price.toFixed(2)}</li>`;
+        }
+
+        // Vehicle-detected feature fees
+        html += "<li><strong>Feature Fees:</strong></li>";
+        for (const [feature, fee] of Object.entries(data.feature_fees)) {
+            const name = feature.replace("_", " ").replace(/\b\w/g, l => l.toUpperCase());
+            html += `<li>${name}: $${fee.toFixed(2)}</li>`;
+        }
+
+        // User-declared condition fees
+        html += "<li><strong>Condition Fees:</strong></li>";
+        for (const [condition, fee] of Object.entries(data.condition_fees)) {
+            const name = condition.replace("_", " ").replace(/\b\w/g, l => l.toUpperCase());
+            html += `<li>${name}: $${fee.toFixed(2)}</li>`;
+        }
+
+        html += "</ul>";
+        pricingContainer.innerHTML = html;
+    } catch (err) {
+        pricingContainer.innerText = "Failed to load pricing info.";
+        console.error(err);
+    }
+}
+
+
 // Initialize years dropdown
 loadYears();
+loadPricingInfo();
