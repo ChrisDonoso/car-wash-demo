@@ -131,3 +131,16 @@ button:hover:not(:disabled) {
     border-bottom: none;
 }
 
+ul li {
+    display: flex;
+    justify-content: space-between;
+    padding: 2px 0;
+}
+
+.name {
+    font-weight: 500;
+}
+
+.price {
+    font-weight: 700;
+}

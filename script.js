@@ -135,6 +135,14 @@ calculateBtn.addEventListener("click", async () => {
             });
         }
 
+        if (data.features && data.features.length > 0) {
+            data.features.forEach(f => {
+                if (f.detected) {
+                    breakdownHTML += `<li>${f.name}: $${f.fee.toFixed(2)}</li>`;
+                }
+            });
+        }
+
         breakdownHTML += `<li><strong>Total: $${data.total_price.toFixed(2)}</strong></li>`;
         breakdownHTML += `</ul>`;
 
@@ -158,7 +166,7 @@ async function loadPricingInfo() {
         if (data?.base_pricing) {
             html += `<div class="section-title">Base Prices</div><ul>`;
             for (const [size, price] of Object.entries(data.base_pricing)) {
-                html += `<li><span>${size.charAt(0).toUpperCase() + size.slice(1)}</span><span>$${price.toFixed(2)}</span></li>`;
+                html += `<li><span class="name">${size.charAt(0).toUpperCase() + size.slice(1)}</span><span class="price">$${price.toFixed(2)}</span></li>`;
             }
             html += "</ul>";
         }
@@ -168,7 +176,7 @@ async function loadPricingInfo() {
             html += `<div class="section-title">Feature Fees</div><ul>`;
             for (const [feature, fee] of Object.entries(data.feature_fees)) {
                 const name = feature.replace("_", " ").replace(/\b\w/g, l => l.toUpperCase());
-                html += `<li><span>${name}</span><span>$${fee.toFixed(2)}</span></li>`;
+                html += `<li><span class="name">${name}</span><span class="price">$${fee.toFixed(2)}</span></li>`;
             }
             html += "</ul>";
         }
@@ -178,7 +186,7 @@ async function loadPricingInfo() {
             html += `<div class="section-title">Condition Fees</div><ul>`;
             for (const [condition, fee] of Object.entries(data.condition_fees)) {
                 const name = condition.replace("_", " ").replace(/\b\w/g, l => l.toUpperCase());
-                html += `<li><span>${name}</span><span>$${fee.toFixed(2)}</span></li>`;
+                html += `<li><span class="name">${name}</span><span class="price">$${fee.toFixed(2)}</span></li>`;
             }
             html += "</ul>";
         }
