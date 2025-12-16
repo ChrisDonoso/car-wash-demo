@@ -146,9 +146,11 @@ calculateBtn.addEventListener("click", async () => {
 
 async function loadPricingInfo() {
     try {
-        const res = await fetch(`${apiBase}/`);
+        const res = await fetch(`${apiBase}/pricing/`);
         if (!res.ok) throw new Error(`API error: ${res.status}`);
         const data = await res.json();
+
+        console.log("Pricing data fetched:", data);
 
         let html = "<ul>";
 
