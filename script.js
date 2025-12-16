@@ -146,41 +146,52 @@ calculateBtn.addEventListener("click", async () => {
 
 async function loadPricingInfo() {
     try {
-        const res = await fetch(`${apiBase}/pricing/`);
-        if (!res.ok) throw new Error(`API error: ${res.status}`);
+        const res = await fetch(`${apiBase}/pricing`);
+        if (!res.ok) throw new Error("Failed to fetch pricing info");
         const data = await res.json();
 
-        console.log("Pricing data fetched:", data);
-
-        let html = "<ul>";
+        let html = "";
 
         // Base pricing
-        html += "<li><strong>Base Prices:</strong></li>";
-        for (const [size, price] of Object.entries(data.base_pricing)) {
-            html += `<li>${size.charAt(0).toUpperCase() + size.slice(1)}: $${price.toFixed(2)}</li>`;
+        if (data?.base_pricing) {
+            html += `<div class="section-title">Base Prices</div><ul>`;
+            for (const [size, price] of Object.entries(data.base_pricing)) {
+                html += `<li><span>${size.charAt(0).toUpperCase() + size.slice(1)}</span><span>$${price.toFixed(2)}</span></li>`;
+            }
+            html += "</ul>";
         }
 
-        // Vehicle-detected feature fees
-        html += "<li><strong>Feature Fees:</strong></li>";
-        for (const [feature, fee] of Object.entries(data.feature_fees)) {
-            const name = feature.replace("_", " ").replace(/\b\w/g, l => l.toUpperCase());
-            html += `<li>${name}: $${fee.toFixed(2)}</li>`;
+        // Feature fees
+        if (data?.feature_fees) {
+            html += `<div class="section-title">Feature Fees</div><ul>`;
+            for (const [feature, fee] of Object.entries(data.feature_fees)) {
+                const name = feature.replace("_", " ").replace(/\b\w/g, l => l.toUpperCase());
+                html += `<li><span>${name}</span><span>$${fee.toFixed(2)}</span></li>`;
+            }
+            html += "</ul>";
         }
 
-        // User-declared condition fees
-        html += "<li><strong>Condition Fees:</strong></li>";
-        for (const [condition, fee] of Object.entries(data.condition_fees)) {
-            const name = condition.replace("_", " ").replace(/\b\w/g, l => l.toUpperCase());
-            html += `<li>${name}: $${fee.toFixed(2)}</li>`;
+        // Condition fees
+        if (data?.condition_fees) {
+            html += `<div class="section-title">Condition Fees</div><ul>`;
+            for (const [condition, fee] of Object.entries(data.condition_fees)) {
+                const name = condition.replace("_", " ").replace(/\b\w/g, l => l.toUpperCase());
+                html += `<li><span>${name}</span><span>$${fee.toFixed(2)}</span></li>`;
+            }
+            html += "</ul>";
         }
 
-        html += "</ul>";
         pricingContainer.innerHTML = html;
+
     } catch (err) {
-        pricingContainer.innerText = "Failed to load pricing info.";
         console.error(err);
+        pricingContainer.innerText = "Unable to load pricing info.";
     }
 }
+
+// Call this on page load
+loadPricingInfo();
+
 
 
 // Initialize years dropdown

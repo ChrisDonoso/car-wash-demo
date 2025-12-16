@@ -88,28 +88,46 @@ button:hover:not(:disabled) {
     text-align: center;
 }
 
-/* Price breakdown */
+/* Price breakdown container */
 #priceBreakdown {
-    margin-top: 10px;
+    margin-top: 20px;
     background-color: #fff;
-    padding: 15px;
-    border-radius: 5px;
+    padding: 20px;
+    border-radius: 10px;
     border: 1px solid #ccc;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
+/* Section headers inside breakdown */
+#priceBreakdown .section-title {
+    font-weight: bold;
+    font-size: 16px;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    color: #2c3e50;
+}
+
+/* Lists inside breakdown */
 #priceBreakdown ul {
     list-style-type: none;
     padding-left: 0;
-    margin: 0;
+    margin: 0 0 10px 0;
 }
 
+/* Individual fee lines */
 #priceBreakdown li {
     margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    border-bottom: 1px dotted #ddd;
 }
 
-/* Optional: highlight total */
+/* Last item (total) */
 #priceBreakdown li:last-child {
     font-weight: bold;
-    color: #2c3e50;
     font-size: 16px;
+    color: #2980b9;
+    border-bottom: none;
 }
+
