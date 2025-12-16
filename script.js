@@ -135,11 +135,9 @@ calculateBtn.addEventListener("click", async () => {
             });
         }
 
-        if (data.features && data.features.length > 0) {
-            data.features.forEach(f => {
-                if (f.detected) {
-                    breakdownHTML += `<li>${f.name}: $${f.fee.toFixed(2)}</li>`;
-                }
+        if (data.condition_fees && data.condition_fees.length > 0) {
+            data.condition_fees.forEach(f => {
+                breakdownHTML += `<li>${f.name}: $${f.fee.toFixed(2)}</li>`;
             });
         }
 
