@@ -191,11 +191,6 @@ async function loadPricingInfo() {
     }
 }
 
-// Call this on page load
-loadPricingInfo();
-
-
-
 // Initialize years dropdown
 loadYears();
 loadPricingInfo();
